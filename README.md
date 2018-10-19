@@ -1,5 +1,14 @@
 # swuniq
 
+Like uniq but works on unsorted input to be used as a pipe filter.
+Allows you to define the how many lines back it'll look for duplicates.
+
+### Performance
+Performance is directly related to the size of the buffer as looking up a hash has O(n).
+
+#### Memory Usage
+Uses a ringbuffer of configurable size (-w option) as a FIFO queue to store hashes of each line to keep memory use constant (64bits * # lines).
+
 
 
 ```sh
