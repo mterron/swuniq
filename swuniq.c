@@ -1,5 +1,5 @@
 /*
-*  stuniq - sliding window uniq
+*  swuniq - sliding window uniq
 *  Copyright (C) Miguel Terron 2018
 *
 *  GPL v2 License
@@ -61,13 +61,12 @@ int notSeen(const unsigned long long hash, const UT_ringbuffer* rbuffer)
 		unsigned long long *item;
 		for (int i=0; i < utringbuffer_len(rbuffer); i++) {
 			item = utringbuffer_eltptr(rbuffer, i);
-			//printf("current item is:%llu\n", *item);
 			out = (out || (*item == hash));
 		}
-		//printf("%d\n", out);
 		return(out);
 	}	
 }
+
 /* ********************************************************
 *  Main
 **********************************************************/
@@ -104,19 +103,12 @@ int main (int argc, char *argv[]){
 		exit(1);
 	}
 
-/* here starts the while(... 
-	line = getline(&buffer,&bufsize,stdin);
-	printf("%zu characters were read.\n",line);
-	printf("You typed: '%s'\n",buffer);
-*/
 	while( -1 != getline(&buffer, &bufsize, stdin) )
 	{
 		fingerprint = hashString(buffer, strlen(buffer));
-		//printf("Current fingerprint is: %llu\n",fingerprint);
 		if (notSeen(fingerprint,history) == 0)
 		{
 			utringbuffer_push_back(history, &fingerprint);
-			//printf("buffer size is: %d -> Current fingerprint is:%llu :\n", utringbuffer_len(history), fingerprint);
 			printf("%s",buffer);
 			fflush(stdout);
 		}
