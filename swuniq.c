@@ -51,7 +51,8 @@ unsigned long long hashString(const void* buffer, size_t length)
 	return hash;
 }
 
-int notSeen(const unsigned long long hash, const UT_ringbuffer* rbuffer)
+/* returns 1 if the hash already exists on the ringbuffer */
+int lookup(const unsigned long long hash, const UT_ringbuffer* rbuffer)
 {
 	int out = 0;
 
@@ -61,20 +62,21 @@ int notSeen(const unsigned long long hash, const UT_ringbuffer* rbuffer)
 		unsigned long long *item;
 		for (int i=0; i < utringbuffer_len(rbuffer); i++) {
 			item = utringbuffer_eltptr(rbuffer, i);
-			out = (out || (*item == hash));
+			out = (hash == *item);
+			if (out) break;
 		}
 		return(out);
-	}	
+	}
 }
 
-/* ********************************************************
+/**********************************************************
 *  Main
 **********************************************************/
 int main (int argc, char *argv[]){
 	int wsize = 100; // Default window size
 	int c;
 
-	while ((c = getopt (argc, argv, "hw:")) != -1) 
+	while ((c = getopt (argc, argv, "hw:")) != -1)
 	{
 		switch (c)
 		{
@@ -83,7 +85,7 @@ int main (int argc, char *argv[]){
 				break;
 			case 'h':
 			default:
-				fprintf (stderr, "Usage: swuniq [-w N]\n\nFilters matching lines from stdin (within a configurable window)\nwriting to stdout.\n\nBy default swuniq will filter out lines that match any of the\nprevious 100 lines.\n\n\t-w N Size of the sliding window to use for deduplication\n", optopt);
+				fprintf(stderr,"Usage: swuniq [-w N]\n\nFilters matching lines from stdin (within a configurable window)\nwriting to stdout.\n\nBy default swuniq will filter out lines that match any of the\nprevious 100 lines.\n\n\t-w N Size of the sliding window to use for deduplication\n");
 				exit(1);
 		}
 	}
@@ -94,7 +96,7 @@ int main (int argc, char *argv[]){
 	UT_ringbuffer *history;
 	UT_icd ut_long_long_icd = {sizeof(long long), NULL, NULL, NULL };
 	utringbuffer_new(history, wsize, &ut_long_long_icd);
-	unsigned long long fingerprint;
+	unsigned long long digest;
 
 	buffer = (char *)malloc(bufsize * sizeof(char));
 	if( buffer == NULL )
@@ -105,15 +107,15 @@ int main (int argc, char *argv[]){
 
 	while( -1 != getline(&buffer, &bufsize, stdin) )
 	{
-		fingerprint = hashString(buffer, strlen(buffer));
-		if (notSeen(fingerprint,history) == 0)
+		digest = hashString(buffer, strlen(buffer));
+		if (!lookup(digest,history))
 		{
-			utringbuffer_push_back(history, &fingerprint);
+			utringbuffer_push_back(history, &digest);
 			printf("%s",buffer);
 			fflush(stdout);
 		}
 	}
-	
+
 	utringbuffer_free(history);
 	fclose(stdin);
 	exit(0);
