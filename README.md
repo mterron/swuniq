@@ -1,5 +1,4 @@
-# swuniq
-
+# ![swuniq](https://i.imgur.com/LpN432Z.png)swuniq
 Like uniq but works on unsorted input to be used as a pipe filter.
 Allows you to define the how many lines back it'll look for duplicates.
 
