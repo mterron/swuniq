@@ -1,5 +1,5 @@
 all : swuniq.c xxhash.h
-	gcc -O swuniq.c -o swuniq
+	$(CC) -O swuniq.c -o swuniq
 
 static : swuniq.c xxhash.h
 	$(CC) -O -static swuniq.c -o swuniq
