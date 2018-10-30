@@ -24,4 +24,4 @@ addons:
 
 script:
   - make
-  - cppcheck --quiet --force --enable=all swuniq.c
+  - cppcheck --quiet --force --error-exitcode=1 --std-c11 swuniq.c
