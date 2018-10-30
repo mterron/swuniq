@@ -1,11 +1,13 @@
 all : swuniq.c xxhash.h
-	$(CC) -O swuniq.c -o swuniq
+	mkdir -p bin
+	$(CC) -O swuniq.c -o bin/swuniq
 
 static : swuniq.c xxhash.h
-	$(CC) -O -static swuniq.c -o swuniq
+	mkdir -p bin
+	$(CC) -O -static swuniq.c -o bin/swuniq
 
 install: swuniq
-	install swuniq /usr/local/bin
+	install bin/swuniq /usr/local/bin
 
 clean :
-	rm -f swuniq
+	rm -f bin/swuniq
