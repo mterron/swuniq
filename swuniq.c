@@ -90,8 +90,17 @@ int main (int argc, char *argv[]){
 				break;
 			case 'h':
 			default:
-				fprintf(stderr,"Usage: swuniq [-w N]\n\nFilters matching lines from stdin (within a configurable window)\nwriting to stdout.\n\nBy default swuniq will filter out lines that match any of the\nprevious 100 lines.\n\n\t-w N Size of the sliding window to use for deduplication\n");
+				fprintf(stderr,"Usage: swuniq [-w N]\nFilter matching lines (within a configurable window) from INPUT\n(or standard input), writing to standard output.\n\n\t-w N Size of the sliding window to use for deduplication\nNote: By default swuniq will use a window of 100 lines.");
 				exit(1);
+		}
+	}
+
+	// Open file if filename is provided
+	if(optind < argc) {
+		if ( freopen(argv[optind], "r", stdin) == NULL)
+		{
+			fprintf(stderr,"Can't open file %s",argv[optind]);
+			exit(1);
 		}
 	}
 
