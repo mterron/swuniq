@@ -78,7 +78,7 @@ int lookup(const unsigned long long hash, const UT_ringbuffer* rbuffer)
 *  Main
 **********************************************************/
 int main (int argc, char *argv[]){
-	int wsize = 100; // Default window size
+	int wsize = 10; // Default window size
 	int c;
 
 	while ((c = getopt (argc, argv, "hw:")) != -1)
@@ -90,7 +90,7 @@ int main (int argc, char *argv[]){
 				break;
 			case 'h':
 			default:
-				fprintf(stderr,"Usage: swuniq [-w N]\nFilter matching lines (within a configurable window) from INPUT\n(or standard input), writing to standard output.\n\n\t-w N Size of the sliding window to use for deduplication\nNote: By default swuniq will use a window of 100 lines.");
+				fprintf(stderr,"Usage: swuniq [-w N]\nFilter matching lines (within a configurable window) from INPUT\n(or standard input), writing to standard output.\n\n\t-w N Size of the sliding window to use for deduplication\nNote: By default swuniq will use a window of 10 lines.\n\n");
 				exit(1);
 		}
 	}
