@@ -1,4 +1,6 @@
 # ![swuniq](https://i.imgur.com/LpN432Z.png)swuniq
+![coverity result](https://img.shields.io/coverity/scan/17035.svg)
+
 Deduplicate matching lines (within a configurable window) from a file or standard input, writing to standard output.
 
 Like uniq but works on unsorted input to be used as a pipe filter with constant memory usage.
