@@ -1,3 +1,5 @@
 swuniq
 *.o
 sonar-project.properties
+bin/*
+bin
