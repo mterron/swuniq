@@ -1,11 +1,10 @@
 # ![swuniq](https://i.imgur.com/LpN432Z.png)swuniq
+Deduplicate matching lines (within a configurable window) from a file or standard input, writing to standard output.
+
 Like uniq but works on unsorted input to be used as a pipe filter with constant memory usage.
 
-### Performance
-Performance is directly related to the size of the buffer as looking up a hash has O(n).
-
 #### Memory Usage
-Uses a ringbuffer of configurable size (-w option) as a FIFO queue to store hashes of each line to keep memory use constant (64bits * -w value).
+swuniq uses a ringbuffer of configurable size (-w option) as a FIFO queue to store hashes of each line to keep memory use constant (64bits * -w value).
 
 
 #### Example
