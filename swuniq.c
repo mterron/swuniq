@@ -64,9 +64,9 @@ int lookup(const unsigned long long hash, const UT_ringbuffer* rbuffer)
 	if (utringbuffer_len(rbuffer) == 0) return(out);
 	else
 	{
-		unsigned long long *item;
+		//unsigned long long *item;
 		for (int i=0; i < utringbuffer_len(rbuffer); i++) {
-			item = utringbuffer_eltptr(rbuffer, i);
+			unsigned long long *item = utringbuffer_eltptr(rbuffer, i);
 			out = (hash == *item);
 			if (out) break;
 		}
