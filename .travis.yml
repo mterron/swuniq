@@ -7,11 +7,10 @@ env:
 
 language: c
 compiler: clang
-script:
-  - make
 sudo: false # only for faster builds
 
 before_install:
+  - sudo apt-get install -qq cppcheck
   - echo -n | openssl s_client -connect https://scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
 
 addons:
@@ -22,3 +21,7 @@ addons:
     notification_email: miguel.a.terron@gmail.com
     build_command: "make"
     branch_pattern: master
+
+script:
+  - make
+  - cppcheck --quiet --force --enable=all swuniq.c
