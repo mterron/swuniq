@@ -130,7 +130,7 @@ int main (int argc, char *argv[]){
 		}
 	}
 
-	utringbuffer_free(history);
 	fclose(stdin);
+//	utringbuffer_free(history);
 	exit(0);
 }
