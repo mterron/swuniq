@@ -3,3 +3,4 @@ swuniq
 sonar-project.properties
 bin/*
 bin
+benchsuite/corpustest
