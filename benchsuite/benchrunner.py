@@ -11,12 +11,12 @@ import argparse
 import time
 import platform
 import shutil
-import tempfile
+# import tempfile
 import tarfile
 import hashlib
 
 from collections import defaultdict
-from operator import itemgetter
+# from operator import itemgetter
 from statistics import mean, pstdev
 from zipfile import ZipFile
 
