@@ -4,7 +4,6 @@ workflow "Build swuniq" {
     "Build with gcc",
     "Build with gcc [static]",
     "Build with clang",
-    "Build with clang [static]"
   ]
 }
 
@@ -21,9 +20,4 @@ action "Build with gcc [static]" {
 action "Build with clang" {
   uses = "docker://alpine:latest"
   runs = ["sh", "-c", "apk add make gcc clang musl-dev binutils && cd $GITHUB_WORKSPACE && CC=clang make"]
-}
-
-action "Build with clang [static]" {
-  uses = "docker://alpine:latest"
-  runs = ["sh", "-c", "apk add make clang musl-dev binutils && cd $GITHUB_WORKSPACE && CC=clang make static"]
 }
