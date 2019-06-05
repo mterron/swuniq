@@ -1,4 +1,4 @@
-# ![swuniq](https://i.imgur.com/LpN432Z.png)swuniq
+# swuniq
 ![Travis (.org)](https://img.shields.io/travis/mterron/swuniq.svg) ![coverity result](https://img.shields.io/coverity/scan/17035.svg) [![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/mterron/swuniq.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/mterron/swuniq/context:cpp)
 
 Deduplicate matching lines (within a configurable window) from a file or standard input, writing to standard output.
