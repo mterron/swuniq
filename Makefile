@@ -9,7 +9,7 @@ static : swuniq.c xxhash.h
 	$(CC) -O2 -static swuniq.c -o bin/swuniq
 
 install: swuniq all
-	install bin/swuniq /usr/local/bin
+	install -D bin/swuniq $(DESTDIR)/usr/local/bin/swuniq
 
 .PHONY: clean
 clean :
