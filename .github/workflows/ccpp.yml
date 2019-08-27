@@ -1,4 +1,4 @@
-name: C/C++ CI
+name: Build swuniq
 
 on: [push]
 
@@ -13,4 +13,4 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: make
-      run: make
+      run: make && bin/swuniq -h
