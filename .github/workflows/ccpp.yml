@@ -5,9 +5,9 @@ on: [push]
 jobs:
   build:
 
-    runs-on: ${{ platform.os }}
+    runs-on: ${{ matrix.os }}
     strategy:
-      platform:
+      matrix:
         os: [ubuntu-latest, windows-latest, macOS-latest]
         
     steps:
