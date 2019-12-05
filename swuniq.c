@@ -1,20 +1,20 @@
 /*
 *  swuniq - sliding window uniq
-*  
+*
 *  MIT License
-*  
+*
 *  Copyright (c) 2018 Miguel Terron
-*  
+*
 *  Permission is hereby granted, free of charge, to any person obtaining a copy
 *  of this software and associated documentation files (the "Software"), to deal
 *  in the Software without restriction, including without limitation the rights
 *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 *  copies of the Software, and to permit persons to whom the Software is
 *  furnished to do so, subject to the following conditions:
-*  
+*
 *  The above copyright notice and this permission notice shall be included in all
 *  copies or substantial portions of the Software.
-*  
+*
 *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -42,6 +42,7 @@
 #include <inttypes.h>
 #include <ctype.h>
 
+#define XXH_STATIC_LINKING_ONLY
 #define XXH_PRIVATE_API
 #include "xxhash.h"
 
@@ -90,7 +91,7 @@ int main (int argc, char *argv[]){
 				break;
 			case 'h':
 			default:
-				fprintf(stderr,"Usage: swuniq [-w N]\nFilter matching lines (within a configurable window) from INPUT\n(or standard input), writing to standard output.\n\n\t-w N Size of the sliding window to use for deduplication\nNote: By default swuniq will use a window of 10 lines.\n\n");
+				fprintf(stderr,"Usage: swuniq [-w N] INPUT\nFilter matching lines (within a configurable window) from INPUT\n(or stdin), writing to stdout.\n\n\t-w N Size of the sliding window to use for deduplication\nNote: By default swuniq will use a window of 10 lines.\n\n");
 				exit(1);
 		}
 	}
