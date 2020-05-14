@@ -1,6 +1,6 @@
 vpath swuniq ./bin
 
-all : swuniq.c xxhash.h
+all : swuniq.c
 	mkdir -p bin
 	$(CC) -O2 swuniq.c -o bin/swuniq -march=native -mtune=native
 

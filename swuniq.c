@@ -42,9 +42,9 @@
 #include <inttypes.h>
 #include <ctype.h>
 
-#define XXH_STATIC_LINKING_ONLY
 #define XXH_PRIVATE_API
-#include "xxhash.h"
+#define XXH_STATIC_LINKING_ONLY
+#include "xxh3.h"
 
 #include "utringbuffer.h"
 
@@ -53,7 +53,7 @@
 unsigned long long hashString(const void* buffer, size_t length)
 {
 	unsigned long long const seed = 1029384756;
-	unsigned long long const hash = XXH64(buffer, length, seed);
+	unsigned long long const hash = XXH3_64bits_withSeed(buffer, length, seed);
 	return hash;
 }
 
