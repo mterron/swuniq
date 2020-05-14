@@ -24,7 +24,14 @@ build-static:
       - "./bin/static/swuniq"
 
 # run tests using the binary built before
-#test:
-#  stage: test
-#  script:
-#    - ./swuniq -h || exit 0
+test:
+  stage: test
+  script:
+    - ./bin/swuniq -h || exit 0
+
+# run tests using the binary built before
+test-static:
+  stage: test
+  script:
+    - ./bin/static/swuniq -h || exit 0
+
