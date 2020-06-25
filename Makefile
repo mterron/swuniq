@@ -1,16 +1,17 @@
-vpath swuniq ./bin
+TARGET=swuniq
+SRCS=swuniq.c xxhash.h
 
-all : swuniq.c
+all: $(SRCS)
 	mkdir -p bin
-	$(CC) -O2 swuniq.c -o bin/swuniq -march=native -mtune=native
+	$(CC) -O2 $(TARGET).c -o bin/$(TARGET)
 
-static : swuniq.c xxhash.h
+static: $(SRCS)
 	mkdir -p bin/static/
-	$(CC) -O2 -static swuniq.c -o bin/static/swuniq -march=native -mtune=native
+	$(CC) -O2 -static $(TARGET).c -o bin/static/$(TARGET)
 
 install: swuniq all
-	install -D bin/swuniq $(DESTDIR)/usr/local/bin/swuniq
+	install -D bin/$(TARGET) $(DESTDIR)/usr/local/bin/$(TARGET)
 
-.PHONY: clean
-clean :
-	rm -f bin/swuniq
+clean:
+	rm -rf ./bin
+

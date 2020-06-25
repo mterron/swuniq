@@ -44,7 +44,8 @@
 
 #define XXH_PRIVATE_API
 #define XXH_STATIC_LINKING_ONLY
-#include "xxh3.h"
+#define XXH_INLINE_ALL
+#include "xxhash.h"
 
 #include "utringbuffer.h"
 
