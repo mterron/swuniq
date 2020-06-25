@@ -1,2 +1,5 @@
+v0.4.1
+Correct import of xxhash
+Cleanup Makefile
 v0.4
 Migrate to XXH3 64bit

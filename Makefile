@@ -1,16 +1,43 @@
-vpath swuniq ./bin
+SHELL=/bin/sh
+TARGET=swuniq
+SRCS=swuniq.c xxhash.h
+CFLAGS=-O2
+DESTDIR=/usr/local/bin
+INSTALL=install
+INSTALL_PROGRAM=$(INSTALL)
 
-all : swuniq.c
+swuniq: $(SRCS)
 	mkdir -p bin
-	$(CC) -O2 swuniq.c -o bin/swuniq -march=native -mtune=native
+	$(CC) $(CFLAGS) $(TARGET).c -o out/$(DESTDIR)/$(TARGET)
 
-static : swuniq.c xxhash.h
-	mkdir -p bin/static/
-	$(CC) -O2 -static swuniq.c -o bin/static/swuniq -march=native -mtune=native
+static: $(SRCS)
+	mkdir -p bin
+	$(CC) $(CFLAGS) -static $(TARGET).c -o out/$(DESTDIR)/$(TARGET)-static
 
-install: swuniq all
-	install -D bin/swuniq $(DESTDIR)/usr/local/bin/swuniq
+all: swuniq static
+.PHONY: all
 
-.PHONY: clean
-clean :
-	rm -f bin/swuniq
+install: swuniq
+	$(INSTALL_PROGRAM) -m 755 -D out/$(DESTDIR)/$(TARGET) $(DESTDIR)
+
+install-static: static
+	$(INSTALL_PROGRAM) -m 755 -D out/$(DESTDIR)/$(TARGET)-static $(DESTDIR)
+
+install-all: swuniq static
+	$(INSTALL_PROGRAM) -m 755 -D out/$(DESTDIR)/$(TARGET) bin/$(TARGET)-static $(DESTDIR)
+
+install-strip:
+	make INSTALL_PROGRAM='install -s' install
+
+install-strip-static:
+	make INSTALL_PROGRAM='install -s' install-static
+
+install-strip-all:
+	make INSTALL_PROGRAM='install -s' install
+	make INSTALL_PROGRAM='install -s' install-static
+
+uninstall:
+	rm -f $(DESTDIR)/$(TARGET) $(DESTDIR)/$(TARGET)-static
+
+clean:
+	rm -rf out/
