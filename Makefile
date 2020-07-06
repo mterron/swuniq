@@ -18,13 +18,16 @@ all: swuniq static
 .PHONY: all
 
 install: swuniq
-	$(INSTALL_PROGRAM) -m 755 -D out/$(TARGET) $(DESTDIR)
+	mkdir -p $(DESTDIR)
+	$(INSTALL_PROGRAM) -m 755 out/$(TARGET) $(DESTDIR)
 
 install-static: static
-	$(INSTALL_PROGRAM) -m 755 -D out/$(TARGET)-static $(DESTDIR)
+	mkdir -p $(DESTDIR)
+	$(INSTALL_PROGRAM) -m 755 out/$(TARGET)-static $(DESTDIR)
 
 install-all: swuniq static
-	$(INSTALL_PROGRAM) -m 755 -D out/$(TARGET) out/$(TARGET)-static $(DESTDIR)
+	mkdir -p $(DESTDIR)
+	$(INSTALL_PROGRAM) -m 755 out/$(TARGET) out/$(TARGET)-static $(DESTDIR)
 
 install-strip:
 	make INSTALL_PROGRAM='install -s' install
