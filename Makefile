@@ -7,24 +7,24 @@ INSTALL=install
 INSTALL_PROGRAM=$(INSTALL)
 
 swuniq: $(SRCS)
-	mkdir -p out/$(DESTDIR)
-	$(CC) $(CFLAGS) $(TARGET).c -o out/$(DESTDIR)/$(TARGET)
+	mkdir -p out
+	$(CC) $(CFLAGS) $(TARGET).c -o out/$(TARGET)
 
 static: $(SRCS)
-	mkdir -p out/$(DESTDIR)
-	$(CC) $(CFLAGS) -static $(TARGET).c -o out/$(DESTDIR)/$(TARGET)-static
+	mkdir -p out
+	$(CC) $(CFLAGS) -static $(TARGET).c -o out/$(TARGET)-static
 
 all: swuniq static
 .PHONY: all
 
 install: swuniq
-	$(INSTALL_PROGRAM) -m 755 -D out/$(DESTDIR)/$(TARGET) $(DESTDIR)
+	$(INSTALL_PROGRAM) -m 755 -D out/$(TARGET) $(DESTDIR)
 
 install-static: static
-	$(INSTALL_PROGRAM) -m 755 -D out/$(DESTDIR)/$(TARGET)-static $(DESTDIR)
+	$(INSTALL_PROGRAM) -m 755 -D out/$(TARGET)-static $(DESTDIR)
 
 install-all: swuniq static
-	$(INSTALL_PROGRAM) -m 755 -D out/$(DESTDIR)/$(TARGET) bin/$(TARGET)-static $(DESTDIR)
+	$(INSTALL_PROGRAM) -m 755 -D out/$(TARGET) out/$(TARGET)-static $(DESTDIR)
 
 install-strip:
 	make INSTALL_PROGRAM='install -s' install
