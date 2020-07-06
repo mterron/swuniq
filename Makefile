@@ -1,17 +1,43 @@
+SHELL=/bin/sh
 TARGET=swuniq
 SRCS=swuniq.c xxhash.h
+CFLAGS=-O2
+DESTDIR=/usr/local/bin
+INSTALL=install
+INSTALL_PROGRAM=$(INSTALL)
 
-all: $(SRCS)
+swuniq: $(SRCS)
 	mkdir -p bin
-	$(CC) -O2 $(TARGET).c -o bin/$(TARGET)
+	$(CC) $(CFLAGS) $(TARGET).c -o out/$(DESTDIR)/$(TARGET)
 
 static: $(SRCS)
-	mkdir -p bin/static/
-	$(CC) -O2 -static $(TARGET).c -o bin/static/$(TARGET)
+	mkdir -p bin
+	$(CC) $(CFLAGS) -static $(TARGET).c -o out/$(DESTDIR)/$(TARGET)-static
 
-install: swuniq all
-	install -D bin/$(TARGET) $(DESTDIR)/usr/local/bin/$(TARGET)
+all: swuniq static
+.PHONY: all
+
+install: swuniq
+	$(INSTALL_PROGRAM) -m 755 -D out/$(DESTDIR)/$(TARGET) $(DESTDIR)
+
+install-static: static
+	$(INSTALL_PROGRAM) -m 755 -D out/$(DESTDIR)/$(TARGET)-static $(DESTDIR)
+
+install-all: swuniq static
+	$(INSTALL_PROGRAM) -m 755 -D out/$(DESTDIR)/$(TARGET) bin/$(TARGET)-static $(DESTDIR)
+
+install-strip:
+	make INSTALL_PROGRAM='install -s' install
+
+install-strip-static:
+	make INSTALL_PROGRAM='install -s' install-static
+
+install-strip-all:
+	make INSTALL_PROGRAM='install -s' install
+	make INSTALL_PROGRAM='install -s' install-static
+
+uninstall:
+	rm -f $(DESTDIR)/$(TARGET) $(DESTDIR)/$(TARGET)-static
 
 clean:
-	rm -rf ./bin
-
+	rm -rf out/
