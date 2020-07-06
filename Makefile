@@ -20,15 +20,15 @@ all: swuniq static
 
 
 install: swuniq
-	mkdir -p $(DESTDIR)
+	mkdir -p $(DESTDIR)$(prefix)
 	$(INSTALL_PROGRAM) -m 755 out/$(TARGET) $(DESTDIR)$(prefix)
 
 install-static: static
-	mkdir -p $(DESTDIR)
+	mkdir -p $(DESTDIR)$(prefix)
 	$(INSTALL_PROGRAM) -m 755 out/$(TARGET)-static $(DESTDIR)$(prefix)
 
 install-all: swuniq static
-	mkdir -p $(DESTDIR)
+	mkdir -p $(DESTDIR)$(prefix)
 	$(INSTALL_PROGRAM) -m 755 out/$(TARGET) out/$(TARGET)-static $(DESTDIR)$(prefix)
 
 install-strip:
@@ -44,8 +44,10 @@ install-strip-all:
 .PHONY: check
 check:
 	@if [ "$$({ seq 1 10; seq 1 10; } | out/swuniq -w 10 | wc -l)" -eq 10 ]; then  \
+		echo 'Test suite result [SUCCESS]' \
 		exit 0 ;\
 	else \
+		echo 'Test suite result [FAIL]' \
 		exit 1 ;\
 	fi
 
