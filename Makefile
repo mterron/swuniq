@@ -2,7 +2,8 @@ SHELL=/bin/sh
 TARGET=swuniq
 SRCS=swuniq.c xxhash.h
 CFLAGS=-O2
-DESTDIR=/usr/local/bin
+DESTDIR=
+prefix=/usr/local/bin
 INSTALL=install
 INSTALL_PROGRAM=$(INSTALL)
 
@@ -14,20 +15,21 @@ static: $(SRCS)
 	mkdir -p out
 	$(CC) $(CFLAGS) -static $(TARGET).c -o out/$(TARGET)-static
 
-all: swuniq static
 .PHONY: all
+all: swuniq static
+
 
 install: swuniq
 	mkdir -p $(DESTDIR)
-	$(INSTALL_PROGRAM) -m 755 out/$(TARGET) $(DESTDIR)
+	$(INSTALL_PROGRAM) -m 755 out/$(TARGET) $(DESTDIR)$(prefix)
 
 install-static: static
 	mkdir -p $(DESTDIR)
-	$(INSTALL_PROGRAM) -m 755 out/$(TARGET)-static $(DESTDIR)
+	$(INSTALL_PROGRAM) -m 755 out/$(TARGET)-static $(DESTDIR)$(prefix)
 
 install-all: swuniq static
 	mkdir -p $(DESTDIR)
-	$(INSTALL_PROGRAM) -m 755 out/$(TARGET) out/$(TARGET)-static $(DESTDIR)
+	$(INSTALL_PROGRAM) -m 755 out/$(TARGET) out/$(TARGET)-static $(DESTDIR)$(prefix)
 
 install-strip:
 	make INSTALL_PROGRAM='install -s' install
@@ -39,8 +41,17 @@ install-strip-all:
 	make INSTALL_PROGRAM='install -s' install
 	make INSTALL_PROGRAM='install -s' install-static
 
+.PHONY: check
+check:
+	@if [ "$$({ seq 1 10; seq 1 10; } | out/swuniq -w 10 | wc -l)" -eq 10 ]; then  \
+		exit 0 ;\
+	else \
+		exit 1 ;\
+	fi
+
+
 uninstall:
-	rm -f $(DESTDIR)/$(TARGET) $(DESTDIR)/$(TARGET)-static
+	rm -f $(DESTDIR)$(prefix)/$(TARGET) $(DESTDIR)$(prefix)/$(TARGET)-static
 
 clean:
 	rm -rf out/
