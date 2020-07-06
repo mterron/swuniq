@@ -7,11 +7,11 @@ INSTALL=install
 INSTALL_PROGRAM=$(INSTALL)
 
 swuniq: $(SRCS)
-	mkdir -p bin
+	mkdir -p out/$(DESTDIR)
 	$(CC) $(CFLAGS) $(TARGET).c -o out/$(DESTDIR)/$(TARGET)
 
 static: $(SRCS)
-	mkdir -p bin
+	mkdir -p out/$(DESTDIR)
 	$(CC) $(CFLAGS) -static $(TARGET).c -o out/$(DESTDIR)/$(TARGET)-static
 
 all: swuniq static
