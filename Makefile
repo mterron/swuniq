@@ -1,23 +1,39 @@
 SHELL=/bin/sh
 TARGET=swuniq
-SRCS=swuniq.c xxhash.h
-CFLAGS=-O2
+SRCS=swuniq.c
 DESTDIR=
 prefix=/usr/local/bin
 INSTALL=install
 INSTALL_PROGRAM=$(INSTALL)
 
+CFLAGS ?= -O2 -pie
+DEBUGFLAGS+=-Wall -Wextra -Wconversion -Wcast-qual -Wcast-align \
+			-Wshadow -Wundef -Wstrict-overflow=5 -Wstrict-prototypes \
+			-Wswitch-enum -Wredundant-decls -Wvla -Wnarrowing \
+			-Wpointer-arith -Wformat-security -Wformat=2 \
+			-Winit-self -Wfloat-equal -Wwrite-strings
+CFLAGS += $(DEBUGFLAGS)
+
+# Add support for xxHash dispatch
+ifeq ($(DISPATCH),1)
+	CFLAGS += -DXXHSUM_DISPATCH=1
+	SRCS += xxHash/xxh_x86dispatch.c
+endif
+
+.PHONY: swuniq
 swuniq: $(SRCS)
 	mkdir -p out
-	$(CC) $(CFLAGS) $(TARGET).c -o out/$(TARGET)
+	$(CC) $(CFLAGS) $(SRCS) -o out/$(TARGET)
 
 static: $(SRCS)
 	mkdir -p out
-	$(CC) $(CFLAGS) -static $(TARGET).c -o out/$(TARGET)-static
+	$(CC) $(CFLAGS) -static $(SRCS) -o out/$(TARGET)-static
 
-.PHONY: all
-all: swuniq static
-
+# ## dispatch only works for x86/x64 systems
+# dispatch: CPPFLAGS += -DXXHSUM_DISPATCH=1
+# dispatch: xxHash/xxhash.o xxHash/xxh_x86dispatch.o swuniq.c
+# 	$(CC) $(CFLAGS) $^ $(LDFLAGS)
+# xxh_x86dispatch.o: xxHash/xxh_x86dispatch.c xxHash/xxh_x86dispatch.h xxHash/xxhash.h
 
 install: swuniq
 	mkdir -p $(DESTDIR)$(prefix)
@@ -43,7 +59,7 @@ install-strip-all:
 
 .PHONY: check
 check:
-	@if [ "$$({ seq 1 10; seq 1 10; } | out/swuniq -w 10 | wc -l)" -eq 10 ]; then  \
+	@if [ "$$({ seq 1 10; seq 1 10; } | out/swuniq -w 10 | wc -l)" -eq 10 ]; then \
 		echo 'Test suite result [SUCCESS]' \
 		exit 0 ;\
 	else \

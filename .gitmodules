@@ -1,0 +1,6 @@
+[submodule "uthash"]
+	path = uthash
+	url = https://github.com/troydhanson/uthash
+[submodule "xxHash"]
+	path = xxHash
+	url = https://github.com/Cyan4973/xxHash

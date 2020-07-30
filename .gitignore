@@ -1,6 +1,4 @@
-swuniq
 *.o
 sonar-project.properties
-bin/*
-bin
-benchsuite/corpustest
+out/*
+out
