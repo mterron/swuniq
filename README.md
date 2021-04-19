@@ -5,6 +5,9 @@ Deduplicate matching lines (within a configurable window) from a file or standar
 
 Like uniq but works on unsorted input to be used as a pipe filter with constant memory usage.
 
+#### Why?
+Sometimes you need consume a data stream (Certificate Transparency log for example) that have non consecutive duplicates and you don't want to deal with them. The usual solution involving `awk` has unbounded memory usage so that might be a problem, this one doesn't.
+
 #### Memory Usage
 swuniq uses a ringbuffer of configurable size (-w option) as a FIFO queue to store hashes of each line to keep memory use constant (64bits * -w value).
 
