@@ -150,13 +150,13 @@ bool lookup(unsigned long long hash, const UT_ringbuffer *rbuffer) {
  *  Main
  **********************************************************/
 int main(int argc, char *argv[]) {
-	unsigned int wsize = 10; // Default window size
+	size_t window_size = 10; // Default window size
 	int c;
 
 	while ((c = getopt(argc, argv, "hw:")) != -1) {
 		switch (c) {
 		case 'w':
-			wsize = strtoumax(optarg, NULL, 10);
+			window_size = strtoumax(optarg, NULL, 10);
 			break;
 		case 'h':
 		default:
@@ -176,12 +176,12 @@ int main(int argc, char *argv[]) {
 
 	UT_ringbuffer *history;
 	UT_icd ut_long_long_icd = {sizeof(long long), NULL, NULL, NULL};
-	utringbuffer_new(history, wsize, &ut_long_long_icd);
+	utringbuffer_new(history, window_size, &ut_long_long_icd);
 
-	char* line;
-	size_t bufsize = sysconf(_SC_PAGESIZE);
+	char* line = NULL;
+	size_t pagesize = (size_t) sysconf(_SC_PAGESIZE);
 	unsigned long long digest;
-	while (-1 != getline(&line, &bufsize, stdin)) {
+	while (getline(&line, &pagesize, stdin) != -1) {
 		digest = hashString(line);
 		if (!lookup(digest, history)) {
 			utringbuffer_push_back(history, &digest);
@@ -192,6 +192,6 @@ int main(int argc, char *argv[]) {
 
 	fclose(stdin);
 	free(line);
-	// utringbuffer_free(history);
+	utringbuffer_free(history);
 	exit(0);
 }
