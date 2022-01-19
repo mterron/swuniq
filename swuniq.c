@@ -29,9 +29,6 @@
  * TODO: Description
  */
 
-/* ************************************
- *  Includes
- **************************************/
 #include <ctype.h>
 #include <err.h>
 #include <inttypes.h>
@@ -41,15 +38,11 @@
 #include <string.h>
 #include <unistd.h>
 
-#define XXH_PRIVATE_API
-#define XXH_STATIC_LINKING_ONLY
-#include "xxHash/xxhash.h"
-
-#ifdef XXHSUM_DISPATCH
-#	include "xxHash/xxh_x86dispatch.h"
-#endif
-
 #include "uthash/src/utringbuffer.h"
+
+
+#define XXH_STATIC_LINKING_ONLY   /* *_state_t */
+#include "xxHash/xxhash.h"
 
 /* makes the next part easier */
 #if defined(__x86_64__) || defined(_M_AMD64) || defined(_M_X64)
@@ -60,7 +53,8 @@
 #endif
 /* Try to detect the architecture. */
 #if defined(ARCH_X86)
-#  if defined(XXHSUM_DISPATCH)
+#  if defined(X86DISPATCH)
+#    include "xxHash/xxh_x86dispatch.h"
 #    define ARCH ARCH_X86 " autoVec"
 #  elif defined(__AVX512F__)
 #    define ARCH ARCH_X86 " + AVX512"
@@ -120,25 +114,24 @@
 #else
 #  define ARCH "unknown"
 #endif
-static const int g_nbBits = (int)(sizeof(void*)*8);
+
+#define VERSION "1.0"
 
 /********************************************************************************************************************/
 
-unsigned long long hashString(const char *data) {
-	unsigned long long const hash = XXH3_64bits(data, strlen(data));
-	return hash;
-}
-
 /* returns 1 if the hash already exists on the ringbuffer */
-bool lookup(unsigned long long hash, const UT_ringbuffer *rbuffer) {
+// XXH64_hash_t is long unsigned int
+bool lookup(XXH64_hash_t digest, const UT_ringbuffer *rbuffer) {
 	bool out = false;
 
-	if (utringbuffer_len(rbuffer) == 0)
+	if (utringbuffer_empty(rbuffer))
 		return (out);
 	else {
+		// long int index = utringbuffer_eltidx(rbuffer, digest);
+		// printf("Index is: %ld\n",index),
 		for (unsigned int i = 0; i < utringbuffer_len(rbuffer); i++) {
-			unsigned long long *item = utringbuffer_eltptr(rbuffer, i);
-			out = (hash == *item);
+			XXH64_hash_t *item = utringbuffer_eltptr(rbuffer, i);
+			out = (digest == *item);
 			if (out)
 				break;
 		}
@@ -153,6 +146,12 @@ int main(int argc, char *argv[]) {
 	size_t window_size = 10; // Default window size
 	int c;
 
+	UT_ringbuffer *history;
+	UT_icd ut_xxh64_hash_t_icd = {sizeof(XXH64_hash_t), NULL, NULL, NULL};
+	char *line = NULL;
+	size_t pagesize = (size_t) sysconf(_SC_PAGESIZE);
+	XXH64_hash_t digest;
+
 	while ((c = getopt(argc, argv, "hw:")) != -1) {
 		switch (c) {
 		case 'w':
@@ -160,7 +159,7 @@ int main(int argc, char *argv[]) {
 			break;
 		case 'h':
 		default:
-			#define HELP_MESSAGE "swuniq 0.6 by Miguel Terron compiled as %i-bit %s\nFilter matching lines (within a configurable window) from INPUT\n(or stdin), writing to stdout.\n\nUsage: swuniq [-w N] INPUT\n\t-w N Size of the sliding window to use for deduplication\nNote: By default swuniq will use a window of 10 lines.\n", g_nbBits, ARCH
+			#define HELP_MESSAGE "swuniq %s (%s) by Miguel Terron\nFilter matching lines (within a configurable window) from INPUT\n(or stdin), writing to stdout.\n\nUsage: swuniq [-w N] INPUT\n\t-w N Size of the sliding window to use for deduplication\nNote: By default swuniq will use a window of 10 lines.\n", VERSION, ARCH
 			fprintf(stderr, HELP_MESSAGE);
 			exit(1);
 		}
@@ -174,15 +173,10 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
-	UT_ringbuffer *history;
-	UT_icd ut_long_long_icd = {sizeof(long long), NULL, NULL, NULL};
-	utringbuffer_new(history, window_size, &ut_long_long_icd);
-
-	char* line = NULL;
-	size_t pagesize = (size_t) sysconf(_SC_PAGESIZE);
-	unsigned long long digest;
+	utringbuffer_new(history, window_size, &ut_xxh64_hash_t_icd);
 	while (getline(&line, &pagesize, stdin) != -1) {
-		digest = hashString(line);
+		digest = XXH3_64bits(line, strlen(line));
+		// printf("Digest is: %lu\n", digest);
 		if (!lookup(digest, history)) {
 			utringbuffer_push_back(history, &digest);
 			printf("%s", line);
