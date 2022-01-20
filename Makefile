@@ -7,29 +7,12 @@ INSTALL=install
 INSTALL_PROGRAM=$(INSTALL)
 
 CFLAGS ?= -O2 -pie
-<<<<<<< Updated upstream
 DEBUGFLAGS+=-Wall -Wextra -Wconversion -Wcast-qual -Wcast-align \
 			-Wshadow -Wundef -Wstrict-overflow=5 -Wstrict-prototypes \
 			-Wswitch-enum -Wredundant-decls -Wvla -Wnarrowing \
 			-Wpointer-arith -Wformat-security -Wformat=2 \
 			-Winit-self -Wfloat-equal -Wwrite-strings
 CFLAGS += $(DEBUGFLAGS)
-
-# Add support for xxHash dispatch
-ifeq ($(DISPATCH),1)
-	CFLAGS += -DXXHSUM_DISPATCH=1
-	SRCS += xxHash/xxh_x86dispatch.c
-endif
-=======
-DEBUGFLAGS+=-Wall -Wextra -Wconversion -Wcast-qual -Wcast-align -Wshadow \
-			-Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement \
-			-Wstrict-prototypes -Wundef -Wpointer-arith -Wformat-security \
-			-Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings \
-			-Wredundant-decls -Wstrict-overflow=2 -Wnarrowing
-
-CFLAGS += $(DEBUGFLAGS)
-
->>>>>>> Stashed changes
 
 .PHONY: swuniq
 # Add support for xxHash dispatch
