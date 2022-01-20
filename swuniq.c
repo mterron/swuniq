@@ -90,7 +90,7 @@
 #  else
 #    define ARCH_NEON ""
 #  endif
-#  define ARCH "ARMv" EXPAND_AND_QUOTE(__ARM_ARCH) ARCH_THUMB ARCH_NEON ARCH_UNALIGNED
+#  define ARCH "ARMv" __ARM_ARCH ARCH_THUMB ARCH_NEON ARCH_UNALIGNED
 #elif defined(__powerpc64__) || defined(__ppc64__) || defined(__PPC64__)
 #  if defined(__GNUC__) && defined(__POWER9_VECTOR__)
 #    define ARCH "ppc64 + POWER9 vector"
